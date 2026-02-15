@@ -1,0 +1,29 @@
+[project]
+name = "nexow-workers"
+version = "0.1.0"
+description = "Nexow background workers - agent execution and trade monitoring"
+requires-python = ">=3.11"
+dependencies = [
+    "redis>=5.0",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "python-dotenv>=1.0",
+    "structlog>=24.0",
+    "httpx>=0.26",
+    "nexow-shared @ git+ssh://git@github.com/nexow-ai/nexow-shared.git@main",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "ruff",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
