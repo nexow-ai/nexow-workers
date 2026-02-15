@@ -1,0 +1,10 @@
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+[env]
+UV_SYSTEM_PYTHON = "1"
+startCommand = "uv run python -m nexow_workers.worker"
