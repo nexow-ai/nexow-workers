@@ -11,6 +11,8 @@ dependencies = [
     "structlog>=24.0",
     "httpx>=0.26",
     "nexow-shared @ git+ssh://git@github.com/nexow-ai/nexow-shared.git@main",
+    "nexow-agents @ git+ssh://git@github.com/nexow-ai/nexow-agents.git@main",
+    "nexow-data @ git+ssh://git@github.com/nexow-ai/nexow-data.git@main",
 ]
 
 [project.optional-dependencies]

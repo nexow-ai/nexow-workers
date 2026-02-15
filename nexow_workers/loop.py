@@ -6,12 +6,12 @@ import asyncio
 
 import structlog
 
-from nexow.ai.factory import generate_strategy
-from nexow.agents.portfolio import PortfolioAgent
-from nexow.broker.oanda import OandaClient
-from nexow.config import settings
-from nexow.db.client import SupabaseClient
-from nexow.worker.executor import AgentExecutor
+from nexow_agents.ai.factory import generate_strategy
+from nexow_agents.portfolio import PortfolioAgent
+from nexow_data.oanda import OandaClient
+from nexow_shared.db.client import SupabaseClient
+from nexow_workers.executor import AgentExecutor
+from nexow_workers.worker import settings
 
 logger = structlog.get_logger(__name__)
 
@@ -36,7 +36,8 @@ class WorkerLoop:
     async def start(self) -> None:
         """Start the infinite worker loop."""
         self._running = True
-        logger.info("worker_started", tick_interval=settings.tick_interval_seconds)
+        tick_interval = settings.tick_interval_seconds
+        logger.info("worker_started", tick_interval=tick_interval)
 
         while self._running:
             try:
@@ -44,7 +45,7 @@ class WorkerLoop:
             except Exception as e:
                 logger.error("tick_error", error=str(e))
 
-            await asyncio.sleep(settings.tick_interval_seconds)
+            await asyncio.sleep(tick_interval)
 
     async def stop(self) -> None:
         """Gracefully stop the worker loop."""
@@ -178,7 +179,7 @@ class WorkerLoop:
                     timeframe = inst_config.get("timeframe", "M5")
 
                     schedule = agent.get("evaluation_schedule", "every_tick")
-                    if schedule != "every_tick" and agent.get("type") == "discretionary":
+                    if schedule != "every_tick" and agent.get("type") == "agent":
                         continue
 
                     candles = await self.market.get_candles(

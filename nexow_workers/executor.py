@@ -6,12 +6,12 @@ from typing import Any
 
 import structlog
 
-from nexow.agents.base import AgentStrategy, Signal, SignalType
-from nexow.agents.discretionary import DiscretionaryAgent
-from nexow.agents.portfolio import PortfolioAgent
-from nexow.agents.systematic import SystematicAgent
-from nexow.broker.models import Candle
-from nexow.db.client import SupabaseClient
+from nexow_agents.base import AgentStrategy, Signal, SignalType
+from nexow_agents.discretionary import DiscretionaryAgent
+from nexow_agents.portfolio import PortfolioAgent
+from nexow_agents.systematic import SystematicAgent
+from nexow_shared.broker.models import Candle
+from nexow_shared.db.client import SupabaseClient
 
 logger = structlog.get_logger(__name__)
 
@@ -32,9 +32,9 @@ class AgentExecutor:
         """Instantiate the correct strategy class based on agent type."""
         agent_id = agent["id"]
         config = agent.get("config", {})
-        agent_type = agent.get("type", "systematic")
+        agent_type = agent.get("type", "bot")
 
-        if agent_type == "discretionary":
+        if agent_type == "agent":
             return DiscretionaryAgent(agent_id, config)
         return SystematicAgent(agent_id, config)
 
@@ -48,10 +48,10 @@ class AgentExecutor:
         Run one evaluation cycle for a single agent on one instrument.
 
         1. Create strategy instance
-        2. Evaluate candles → Signal
-        3. BUY/SELL → record entry (if no open trade for this instrument)
-        4. CLOSE → close open trades with return_%
-        5. HOLD → do nothing
+        2. Evaluate candles -> Signal
+        3. BUY/SELL -> record entry (if no open trade for this instrument)
+        4. CLOSE -> close open trades with return_%
+        5. HOLD -> do nothing
         """
         agent_id = agent["id"]
         instrument = candles[0].instrument if candles else agent.get("instrument", "EUR_USD")

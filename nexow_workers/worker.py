@@ -11,10 +11,13 @@ logger = structlog.get_logger(__name__)
 
 class Settings(BaseSettings):
     """Worker settings."""
+    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
+
     redis_url: str = "redis://localhost:6379"
     redis_channel: str = "nexow:market:prices"
     nexow_agents_url: str = "http://localhost:8002"
     nexow_data_url: str = "http://localhost:8001"
+    tick_interval_seconds: int = 5
 
 
 settings = Settings()
